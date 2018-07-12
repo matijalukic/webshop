@@ -1,0 +1,35 @@
+﻿@model IEnumerable<WebShop.Models.Setting>
+
+@{
+    ViewBag.Title = "Admin settings";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<h2>Admin settings</h2>
+
+
+<table class="table">
+    <tr>
+        <th>Setting</th>
+        <th>
+            Value
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @item.Key
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Value)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Key }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Key }) |
+        </td>
+    </tr>
+}
+
+</table>

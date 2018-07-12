@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WebShop.Models.TokenOrder>
+@{
+    ViewBag.Title = "User's orders";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+
+<div class="row">
+
+    <div class="col-md-12">
+        <h2 class="my-3">Token Orders</h2>
+
+        @if (Model.Any())
+        {
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        State
+                    </th>
+                    <th>
+                        Order sent
+                    </th>
+                    <th>
+                        Order completed
+                    </th>
+                </tr>
+                @foreach(var Order in Model)
+                {
+                    <tr>
+                        <td>@Order.Amount</td>
+                        <td>@Order.Price</td>
+                        <td>@Order.State</td>
+                        <td>@Order.CreatedAt</td>
+                        <td>
+                            @if(Order.CompletedAt != null)
+                            {
+                                @Order.CompletedAt
+                            }
+                            else
+                            {
+                                <span class="badge badge-warning">Pending</span>
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                You have no Token Orders!
+            </div>
+        }
+
+
+        <div class="text-center">
+            @if(ViewBag.Start != 0)
+            {
+                @Html.ActionLink("Previous", "Orders", "User", new { start = ViewBag.Start - WebShop.Controllers.UserController.OrdersPerPage }, new { @class = "btn btn-outline-info mr-3" });
+            }
+
+            <span class="text-muted">Showing @ViewBag.Start - @Math.Min(ViewBag.Start + WebShop.Controllers.UserController.OrdersPerPage, ViewBag.TotalOrders) out of @ViewBag.TotalOrders</span>
+
+            @if (ViewBag.Start < ViewBag.TotalOrders - WebShop.Controllers.UserController.OrdersPerPage)
+            {
+                @Html.ActionLink("Next", "Orders", "User", new { start = ViewBag.Start + WebShop.Controllers.UserController.OrdersPerPage }, new { @class = "btn btn-outline-info ml-3" });
+            }
+            
+        </div>
+
+    </div>
+
+</div>
+
+

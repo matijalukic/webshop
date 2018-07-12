@@ -1,0 +1,91 @@
+﻿@model WebShop.Models.User
+@{
+    ViewBag.Title = "Change profile";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+
+@Html.Partial("Notification")
+
+<div class="row justify-content-center">
+    <div class="col-md-6 ">
+        <h2 class="text-center my-4">Change details</h2>
+
+        @using (Html.BeginForm("Index", "User", new { }, FormMethod.Post, new { @role = "form" }))
+        {
+
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Name, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Your name" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Surname, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Surname, new { @class = "form-control", @placeholder = "Your surname" })
+                @Html.ValidationMessageFor(m => m.Surname, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "email", @placeholder = "Your email" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+
+
+            
+
+            <div class="form-group text-center">
+                <input type="submit" value="Change" class="btn btn-outline-info" />
+            </div>
+
+        }
+        
+    </div>
+    <div class="col-md-6">
+        <h2 class="text-center my-4">Change password</h2>
+
+        @using (Html.BeginForm("ChangePassword", "User", new { }, FormMethod.Post, new { @role = "form" }))
+        {
+
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group text-left">
+                @Html.Label("OldPassword", "Current Password", new { })
+
+                @Html.Password( "OldPassword", "",  new { @class = "form-control", @placeholder = "Current password" })
+                @Html.ValidationMessage( "OldPassword", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.Label("Password", "New Password", new { })
+
+                @Html.Password("Password", "", new { @class = "form-control", @placeholder = "New password" })
+                @Html.ValidationMessage("Password", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.Label("ConfirmPassword", "Confirm Password", new { })
+
+                @Html.Password("ConfirmPassword", "", new { @class = "form-control", @placeholder = "Confirm password" })
+                @Html.ValidationMessage("ConfirmPassword", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group text-center">
+                <input type="submit" value="Change password" class="btn btn-outline-info" />
+            </div>
+
+        }
+        
+
+    </div>
+
+
+</div>

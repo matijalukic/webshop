@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            @Html.ActionLink("Profile", "Index", "User", new { }, new { @class = "nav-link " + (ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "User" ? "active" : "") })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("Buy Tokens", "BuyTokens", "User", new { }, new { @class = "nav-link " + (ViewContext.RouteData.Values["Action"].ToString() == "BuyTokens" ? "active" : "") })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("Token Orders", "Orders", "User", new { }, new { @class = "nav-link " + (ViewContext.RouteData.Values["Action"].ToString() == "Orders" ? "active" : "") })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("Create Auction", "Create", "Auctions", new { }, new { @class = "nav-link " + (ViewContext.RouteData.Values["Action"].ToString() == "Create" ? "active" : "") })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("My Auctions", "Index", "Auctions", new { }, new { @class = "nav-link " + (ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Auctions" ? "active" : "") })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("Won Auctions", "WonAuctions", "Auctions", new { }, new { @class = "nav-link " + (ViewContext.RouteData.Values["Action"].ToString() == "WonAuctions" && ViewContext.RouteData.Values["Controller"].ToString() == "Auctions" ? "active" : "") })
+        </li>
+
+        @if(Session["LoggedUser"] != null && (Session["LoggedUser"] as WebShop.Models.User).IsAdmin)
+        {
+        <li class="nav-item">
+            @Html.ActionLink("Ready Auctions", "Pending", "Auctions", new { }, new { @class = "nav-link bg-warning " + (ViewContext.RouteData.Values["Action"].ToString() == "Pending" && ViewContext.RouteData.Values["Controller"].ToString() == "Auctions" ? "active" : "") })
+        </li>
+
+        <li class="nav-item">
+            @Html.ActionLink("Settings", "Index", "Settings", new { }, new { @class = "nav-link bg-warning " + (ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Settings" ? "active" : "") })
+        </li>
+        }
+    </ul>
+</div>
+
+@RenderBody()
+
+
+@section Scripts{
+    @RenderSection("Scripts", required: false)
+}

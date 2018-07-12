@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Buy Tokens";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+
+<div class="row">
+
+    <div class="col-md-12">
+        <h2>Buy Tokens</h2>
+
+        <div class="card-deck">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Silver package</h5>
+                    <p class="card-text">@ViewBag.Silver Tokens</p>
+                    @Html.ActionLink("Buy package", "CreateTokenTransactions", new { amount = ViewBag.Silver }, new { @class = "btn btn-outline-primary" } )
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Gold package</h5>
+                    <p class="card-text">@ViewBag.Gold Tokens</p>
+                    @Html.ActionLink("Buy package", "CreateTokenTransactions", new { amount = ViewBag.Gold }, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Platinum package</h5>
+                    <p class="card-text">@ViewBag.Platinum Tokens</p>
+                    @Html.ActionLink("Buy package", "CreateTokenTransactions", new { amount = ViewBag.Platinum }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

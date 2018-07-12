@@ -1,0 +1,20 @@
+﻿
+
+@if(Session["error"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @Session["error"]
+    </div>
+}
+
+@if(Session["success"] != null)
+{
+    <div class="alert alert-success text-center">
+        @Session["success"]
+    </div>
+}
+
+@{ 
+    Session.Remove("success");
+    Session.Remove("error");
+}

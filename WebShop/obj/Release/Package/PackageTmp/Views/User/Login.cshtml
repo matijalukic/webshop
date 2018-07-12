@@ -1,0 +1,46 @@
+﻿@model WebShop.Models.Validation.Login
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-4 text-center">
+        <h2 class="text-center my-4">Login</h2>
+            @Html.Partial("Notification")
+
+            @using (Html.BeginForm("Login", "User", new { }, FormMethod.Post, new { @role = "form" }))
+            {
+
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group text-left">
+                    @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Your email" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+
+
+                <div class="form-group text-left">
+                    @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Your password" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group text-center">
+                    <input type="submit" value="Log in" class="btn btn-outline-primary" />
+                </div>
+
+            }
+
+
+        @Html.ActionLink("Register?", "Register", "User", new { @class = "btn btn-outline-info" } )
+
+
+    </div>
+
+</div>

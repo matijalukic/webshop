@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <a class="navbar-brand" href="#">@Html.ActionLink("Web Shop", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                @using(var DB = new WebShop.Models.Prodavnica())
+                {
+                    if (DB.Users.Any() && (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+
+                        
+                            var LoggedUserEmail = System.Web.HttpContext.Current.User.Identity.Name;
+
+                                var UserLogged = DB.Users.Where(u => u.Email == LoggedUserEmail).FirstOrDefault();
+                                Session["LoggedUser"] = UserLogged;
+                                Session["UserId"] = UserLogged.Id;
+                        
+                        
+
+                        <li class="nav-item">
+                            <span class="nav-link active"><span id="user-balance">@((Session["LoggedUser"] as WebShop.Models.User).Tokens)</span> Tokens</span>
+                        </li>
+                        <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "User" ? "active" : "")">
+                            @Html.ActionLink("Users Panel", "Index", "User", new { },  new { @class = "nav-link" })                        
+                        </li>
+                        <li class="nav-item ">
+                            @Html.ActionLink("Log out", "Logout", "User", new { }, new { @class = "nav-link" })
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Login" ? "active" : "")">
+                            @Html.ActionLink("Sign in", "Login", "User", new { }, new { @class = "nav-link" } )
+                        </li>
+                        <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Register" ? "active" : "")">
+                            @Html.ActionLink("Sign up", "Register", "User", new { }, new { @class = "nav-link" })
+                        </li>
+
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - WebShop</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

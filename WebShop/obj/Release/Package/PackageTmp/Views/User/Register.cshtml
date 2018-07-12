@@ -1,0 +1,73 @@
+﻿@model WebShop.Models.Validation.Registration
+
+@{
+    ViewBag.Title = "Register new Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<div class="row justify-content-center">
+
+    <div class="col-md-4 text-center">
+        <h2 class="text-center my-4">Register</h2>
+        
+        @Html.Partial("Notification")
+
+        @using (Html.BeginForm("Register", "User", new { }, FormMethod.Post, new { @role = "form" }))
+        {
+
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Name, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Your name" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Surname, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Surname, new { @class = "form-control", @placeholder = "Your surname" })
+                @Html.ValidationMessageFor(m => m.Surname, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "email", @placeholder = "Your email" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Your password" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-left">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Your password again" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group text-center">
+                <input type="submit" value="Register" class="btn btn-outline-info" />
+            </div>
+
+        }
+
+
+        @Html.ActionLink("Login", "Login", "User", new { @class = "btn btn-outline-primary" })
+
+
+    </div>
+
+</div>
+
+
+
+
