@@ -169,3 +169,4 @@ C:\Users\Matija\source\repos\WebShop\WebShop\obj\Release\WebShop.Migrations.Winn
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.dll
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.pdb
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.xml
+C:\Users\Matija\source\repos\WebShop\WebShop\obj\Release\WebShop.Migrations.TokenOrdersPriceDecimal.resources

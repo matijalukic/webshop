@@ -260,7 +260,7 @@ namespace WebShop.Controllers
 
 
             var UserId = Session["UserId"] as int?;
-            var OrderOfUser = DB.TokenOrders.Where(t => t.UserId == UserId).OrderByDescending(t => t.Id).Skip(() => startOrder).Take(() => OrdersPerPage);
+            var OrderOfUser = DB.TokenOrders.Where(t => t.UserId == UserId).OrderByDescending(t => t.CreatedAt).Skip(() => startOrder).Take(() => OrdersPerPage);
 
 
             ViewBag.TotalOrders = DB.TokenOrders.Where(t => t.UserId == UserId).Count();
@@ -298,62 +298,71 @@ namespace WebShop.Controllers
             if (amount != Prices.Silver && amount != Prices.Gold && amount != Prices.Platinum)
                 return RedirectToAction("PaymentFailed");
 
-            // make submited order
-            var NewTokenOrder = DB.TokenOrders.Add(new TokenOrder()
-            {
-                UserId = LoggedUser.Id,
-                State = "SUBMITTED",
-                Amount = amount,
-                Price = DB.Settings.Where(s => s.Key == "T").First().Value,
-                CreatedAt = DateTime.Now,
-            });
-            DB.SaveChanges();
 
             // calculate price
             int currency = DB.Settings.Find("C").Value;
             int pricePerToken = DB.Settings.Find("T").Value;
             decimal price = Currencies.ConvertToRsd(pricePerToken * amount, currency);
 
+
+            // make submited order
+            var NewTokenOrder = DB.TokenOrders.Add(new TokenOrder()
+            {
+                UserId = LoggedUser.Id,
+                State = "SUBMITTED",
+                Amount = amount,
+                Price = price,
+                CreatedAt = DateTime.Now,
+            });
+
+            DB.SaveChanges();
+            
             return Redirect("http://stage.centili.com/payment/widget?apikey=ce797d8eeab183872300e64cd877a4e3&country=rs&reference=" + NewTokenOrder.Id + "&returnurl=http://matijaiep.azurewebsites.net/User/Confirm"); // &price=" + price);
         }
 
-
+        
         // sending email
-        private void PostMessage(int amount = 0, string emailReceive = "matija996@gmail.com")
+        private async Task PostMessage(TokenOrder Order, User User)
         {
-            using (SmtpClient smtpClient = new SmtpClient("smtp.sendgrid.net", 587))
+            var apiKey = System.Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            //using (SmtpClient smtpClient = new SmtpClient("smtp.sendgrid.net", 587))
+            //{
+            //    var basicCredential = new NetworkCredential("azure_fd3fd6f65f786f561329c9cbf9b8201d@azure.com", "Zaboravimstalno060796@");
+            //    using (MailMessage message = new MailMessage())
+            //    {
+            //        MailAddress fromAddress = new MailAddress("noreply@matijaiep.com");
+
+            //        smtpClient.Host = "matijaiep.azurewebsites.net";
+            //        smtpClient.UseDefaultCredentials = false;
+            //        smtpClient.Credentials = basicCredential;
+
+            //        message.From = fromAddress;
+            //        message.Subject = "Kupovina Tokena";
+            //        // Set IsBodyHtml to true means you can send HTML email.
+            //        message.IsBodyHtml = true;
+            //        message.Body = "<h1>Kupili ste " + Order.Amount + " Tokena</h1>";
+            //        message.Body += "<p>Po ceni od " + Order.Price + " RSD</p>";
+            //        message.To.Add(User.Email);
+
+            //        smtpClient.Send(message);
+            //    }
+            //}
+
+
+            var client = new SendGridClient("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");
+            var msg = new SendGridMessage()
             {
-                var basicCredential = new NetworkCredential("azure_fd3fd6f65f786f561329c9cbf9b8201d@azure.com", "Zaboravimstalno060796@");
-                using (MailMessage message = new MailMessage())
-                {
-                    MailAddress fromAddress = new MailAddress("noreply@matijaiep.com");
-
-                    smtpClient.Host = "mail.mydomain.com";
-                    smtpClient.UseDefaultCredentials = false;
-                    smtpClient.Credentials = basicCredential;
-
-                    message.From = fromAddress;
-                    message.Subject = "Kupovina Tokena";
-                    // Set IsBodyHtml to true means you can send HTML email.
-                    message.IsBodyHtml = true;
-                    message.Body = "<h1>Kupili ste "+amount+" Tokena</h1>";
-                    message.To.Add(emailReceive);
-
-                    try
-                    {
-                        smtpClient.Send(message);
-                    }
-                    catch (Exception ex)
-                    {
-                        //Error, could not send the message
-                        Response.Write(ex.Message);
-                    }
-                }
-            }
+                From = new EmailAddress("noreply@matijaiepazurewebsites.net", "Matija Lukic"),
+                Subject = "Kupovina Tokena",
+                PlainTextContent = "Zdravo!",
+                HtmlContent = "<h1>Kupili ste " + Order.Amount + " Tokena</h1><p>Po ceni od " + Order.Price + " RSD</p>"
+            };
+            msg.AddTo(new EmailAddress(User.Email));
+            await client.SendEmailAsync(msg);
         }
 
         [AllowAnonymous]
-        public ActionResult Confirm(string reference, string status)
+        public async Task<ActionResult> Confirm(string reference, string status)
         {
             var OrderId = Int32.Parse(reference);
             var OrderToConfirm = DB.TokenOrders.Find(OrderId);
@@ -363,8 +372,18 @@ namespace WebShop.Controllers
 
                 if (UserWhoGetsTokens != null)
                 {
+                    // notify user and update balance
                     if (status == "success" && OrderToConfirm.CompletedAt == null)
                     {
+                        try
+                        {
+                            await PostMessage(OrderToConfirm, UserWhoGetsTokens);
+                        }
+                        catch (Exception ex)
+                        {
+                            Session["error"] = ex.InnerException.Message;
+                        }
+
                         UserWhoGetsTokens.Tokens += OrderToConfirm.Amount;
                         DB.Entry(UserWhoGetsTokens).State = EntityState.Modified;
                     }

@@ -272,6 +272,10 @@
     <Compile Include="Migrations\201807112350286_WinnerToAuction.Designer.cs">
       <DependentUpon>201807112350286_WinnerToAuction.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807131858257_TokenOrdersPriceDecimal.cs" />
+    <Compile Include="Migrations\201807131858257_TokenOrdersPriceDecimal.Designer.cs">
+      <DependentUpon>201807131858257_TokenOrdersPriceDecimal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Auction.cs" />
     <Compile Include="Models\Bid.cs" />
@@ -434,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807112350286_WinnerToAuction.resx">
       <DependentUpon>201807112350286_WinnerToAuction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807131858257_TokenOrdersPriceDecimal.resx">
+      <DependentUpon>201807131858257_TokenOrdersPriceDecimal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

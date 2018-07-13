@@ -150,7 +150,6 @@ C:\Users\Matija\source\repos\WebShop\WebShop\bin\System.Web.Razor.xml
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\System.Web.WebPages.xml
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\System.Web.WebPages.Deployment.xml
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\System.Web.WebPages.Razor.xml
-C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.csprojResolveAssemblyReference.cache
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.Migrations.Initial.resources
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.Migrations.EmailUnique.resources
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.Migrations.TokenOrderList.resources
@@ -166,3 +165,7 @@ C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.csproj.CoreCompil
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.dll
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.pdb
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.Migrations.WinnerToAuction.resources
+C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.dll
+C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.pdb
+C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.xml
+C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.Migrations.TokenOrdersPriceDecimal.resources

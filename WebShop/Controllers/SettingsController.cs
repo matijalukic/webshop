@@ -20,7 +20,9 @@ namespace WebShop.Controllers
         {
             var LoggedUser = Session["LoggedUser"] as User;
             if (LoggedUser == null || !db.Users.Find(LoggedUser.Id).IsAdmin) return HttpNotFound();
-            
+
+            ViewBag.Currency = db.Settings.Find("C").Value;
+
             return View(db.Settings.ToList());
         }
 

@@ -33,3 +33,18 @@
 }
 
 </table>
+
+@using (Html.BeginForm("Edit", "Settings", new { Key = "C" }, FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-inline">
+        <label for="currency">Currency:</label>
+        <select name="Value" id="Value" class="form-control mx-3">
+            <option value="0" @(ViewBag.Currency == 0 ? "selected" : "" )>RSD</option>
+            <option value="1" @(ViewBag.Currency == 1 ? "selected" : "" )>EUR</option>
+            <option value="2" @(ViewBag.Currency == 2 ? "selected" : "" )>USD</option>
+        </select>
+        <button type="submit" class="btn btn-outline-primary">Change currency</button>
+    </div>
+}
+    

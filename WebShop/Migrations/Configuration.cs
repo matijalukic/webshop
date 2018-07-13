@@ -36,9 +36,9 @@ namespace WebShop.Migrations
             };
             context.Users.AddOrUpdate(firstUser);
 
-            context.Users.Add(new User
+            context.Users.AddOrUpdate(new User
             {
-                Id = 1,
+                Id = 2,
                 Name = "Nemanja",
                 Surname = "Kojic",
                 Email = "nemanja.kojic@etf.rs",
@@ -51,6 +51,7 @@ namespace WebShop.Migrations
 
             context.Auctions.AddOrUpdate(new Auction
             {
+                Id = 1,
                 Name = "Cola",
                 Picture = "https://www.coca-cola.rs/content/dam/GO/coca-cola/sebia/One%20Brand/coca-cola-logo-260x260.png",
                 Duration = 3600,
@@ -58,11 +59,13 @@ namespace WebShop.Migrations
                 Price = 1000,
                 CreatedAt = DateTime.Now,
                 State = "Ready",
-                UserId = firstUser.Id
+                UserId = firstUser.Id,
+                WinnerId = null,
             });
 
             context.Auctions.AddOrUpdate(new Auction
             {
+                Id = 2,
                 Name = "Fanta",
                 Picture = "https://www.coca-cola.rs/content/dam/GO/fanta-2gen/shared/logo/Logo_260x260.png",
                 Duration = 3600,
@@ -70,7 +73,8 @@ namespace WebShop.Migrations
                 Price = 900,
                 CreatedAt = DateTime.Now,
                 State = "Ready",
-                UserId = firstUser.Id
+                UserId = firstUser.Id,
+                WinnerId = null,
             });
 
 
