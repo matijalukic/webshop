@@ -38,15 +38,18 @@ namespace WebShop.Hubs
                     Clients.Caller.ReceiveError("The auction has expired!");
                     return;
                 }
-                // Maximum old bid
-                var MyBids = db.Bids.Where(b => b.AuctionId == AuctionId && b.UserId == LoggedUser.Id);
-                int MaxOldBid = MyBids.Any() ? MyBids.Max(a => a.Amount) : 0;
 
-                int AmountToPay = Amount - MaxOldBid;
-                
+               
+
                 Bid newBid;
                 using (var transactionContext = db.Database.BeginTransaction())
                 {
+                    // Maximum old bid
+                    var MyBids = db.Bids.Where(b => b.AuctionId == AuctionId && b.UserId == LoggedUser.Id);
+                    int MaxOldBid = MyBids.Any() ? MyBids.Max(a => a.Amount) : 0;
+
+                    int AmountToPay = Amount - MaxOldBid;
+
                     // ako je veci od najveceg ponudjenog
                     int? MaxBidAmount = AuctionsBids.Any() ? AuctionsBids.Max(a => a.Amount) : AuctionOnBid.StartPrice;
 
@@ -64,7 +67,15 @@ namespace WebShop.Hubs
                     {
                         try
                         {
-                            LoggedUser.Tokens -= Amount - MaxOldBid;
+                            // vrati rezervisani novac
+                            var OldHighestBId = AuctionsBids.OrderByDescending(a => a.Amount).FirstOrDefault();
+                            if (OldHighestBId != null)
+                            {
+                                OldHighestBId.User.Tokens += OldHighestBId.Amount;
+                                db.Entry(OldHighestBId.User).State = EntityState.Modified;
+                            }
+                            // rezervisi stari novac
+                            LoggedUser.Tokens -= Amount;
                             db.Entry(LoggedUser).State = EntityState.Modified;
 
                             newBid = new Bid
