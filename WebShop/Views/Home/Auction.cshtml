@@ -146,6 +146,7 @@
             };
 
             chat.client.ReceiveError = function (error) {
+                $(".title-section .notification").remove();
                 $(".title-section").prepend("<div class='alert alert-warning notification text-center'>" + error + "</div>");
                 var notification = $(".notification");
                 notification.hide().slideDown();

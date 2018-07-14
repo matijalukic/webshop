@@ -325,29 +325,6 @@ namespace WebShop.Controllers
         private async Task PostMessage(TokenOrder Order, User User)
         {
             var apiKey = System.Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
-            //using (SmtpClient smtpClient = new SmtpClient("smtp.sendgrid.net", 587))
-            //{
-            //    var basicCredential = new NetworkCredential("azure_fd3fd6f65f786f561329c9cbf9b8201d@azure.com", "Zaboravimstalno060796@");
-            //    using (MailMessage message = new MailMessage())
-            //    {
-            //        MailAddress fromAddress = new MailAddress("noreply@matijaiep.com");
-
-            //        smtpClient.Host = "matijaiep.azurewebsites.net";
-            //        smtpClient.UseDefaultCredentials = false;
-            //        smtpClient.Credentials = basicCredential;
-
-            //        message.From = fromAddress;
-            //        message.Subject = "Kupovina Tokena";
-            //        // Set IsBodyHtml to true means you can send HTML email.
-            //        message.IsBodyHtml = true;
-            //        message.Body = "<h1>Kupili ste " + Order.Amount + " Tokena</h1>";
-            //        message.Body += "<p>Po ceni od " + Order.Price + " RSD</p>";
-            //        message.To.Add(User.Email);
-
-            //        smtpClient.Send(message);
-            //    }
-            //}
-
 
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()

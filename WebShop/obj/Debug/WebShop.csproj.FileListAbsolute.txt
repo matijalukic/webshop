@@ -169,3 +169,4 @@ C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.dll
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.pdb
 C:\Users\Matija\source\repos\WebShop\WebShop\bin\SendGrid.xml
 C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.Migrations.TokenOrdersPriceDecimal.resources
+C:\Users\Matija\source\repos\WebShop\WebShop\obj\Debug\WebShop.csprojResolveAssemblyReference.cache

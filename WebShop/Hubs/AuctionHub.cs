@@ -31,50 +31,69 @@ namespace WebShop.Hubs
                     Clients.Caller.ReceiveError("User must be logged in!");
                     return;
                 }
-
-
-                // ako je veci od najveceg ponudjenog
-                int? MaxBidAmount = AuctionsBids.Any() ? AuctionsBids.Max(a => a.Amount) : AuctionOnBid.StartPrice;
-                if (Amount > MaxBidAmount.GetValueOrDefault())
+                
+                // provera da li je aukcija istekla
+                if (DateTime.UtcNow > AuctionOnBid.ClosedAt)
                 {
+                    Clients.Caller.ReceiveError("The auction has expired!");
+                    return;
+                }
+                // Maximum old bid
+                var MyBids = db.Bids.Where(b => b.AuctionId == AuctionId && b.UserId == LoggedUser.Id);
+                int MaxOldBid = MyBids.Any() ? MyBids.Max(a => a.Amount) : 0;
 
-                    // Maximum old bid
-                    var MyBids = db.Bids.Where(b => b.AuctionId == AuctionId && b.UserId == LoggedUser.Id);
-                    int MaxOldBid = MyBids.Any() ? MyBids.Max(a => a.Amount) : 0;
+                int AmountToPay = Amount - MaxOldBid;
+                
+                Bid newBid;
+                using (var transactionContext = db.Database.BeginTransaction())
+                {
+                    // ako je veci od najveceg ponudjenog
+                    int? MaxBidAmount = AuctionsBids.Any() ? AuctionsBids.Max(a => a.Amount) : AuctionOnBid.StartPrice;
 
-                    int AmountToPay = Amount - MaxOldBid;
-
-                    // Decreas users number of tokens
-                    if (LoggedUser.Tokens < AmountToPay)
+                    // Decrease users number of tokens
+                    if (db.Users.Find(LoggedUser.Id).Tokens < AmountToPay)
                     {
                         Clients.Caller.ReceiveError("Not enough tokens!");
-                        return;
                     }
-
-                    LoggedUser.Tokens -= Amount - MaxOldBid;
-                    db.Entry(LoggedUser).State = EntityState.Modified;
-
-                    Bid newBid = new Bid
+                    // provera da li je najveca
+                    else if (Amount <= MaxBidAmount.GetValueOrDefault())
                     {
-                        AuctionId = AuctionId,
-                        UserId = LoggedUser.Id,
-                        Amount = Amount,
-                        CreatedAt = DateTime.Now
-                    };
+                        Clients.Caller.ReceiveError("New bid must be the highest!");
+                    }
+                    else
+                    {
+                        try
+                        {
+                            LoggedUser.Tokens -= Amount - MaxOldBid;
+                            db.Entry(LoggedUser).State = EntityState.Modified;
 
-                    db.Bids.Add(newBid);
-                    db.SaveChanges();
-                    // return to caller new balance
-                    Clients.Caller.UpdateBalance(LoggedUser.Tokens);
-                    // Return to all clients
-                    Clients.All.ReceiveBid(Amount, User, newBid.CreatedAt.ToString());
-                    Clients.All.NewPrice(Amount);
-                    Clients.All.UpdatePrice(Amount, AuctionId);
+                            newBid = new Bid
+                            {
+                                AuctionId = AuctionId,
+                                UserId = LoggedUser.Id,
+                                Amount = Amount,
+                                CreatedAt = DateTime.UtcNow
+                            };
+
+                            db.Bids.Add(newBid);
+                            db.SaveChanges();
+                            transactionContext.Commit();
+
+                            // return to caller new balance
+                            Clients.Caller.UpdateBalance(LoggedUser.Tokens);
+                            // Return to all clients
+                            Clients.All.ReceiveBid(Amount, User, newBid.CreatedAt.ToString());
+                            Clients.All.NewPrice(Amount);
+                            Clients.All.UpdatePrice(Amount, AuctionId);
+                        }
+                        catch (Exception)
+                        {
+                            transactionContext.Rollback();
+                        }
+                    }
+                    
                 }
-                else
-                {
-                    Clients.Caller.ReceiveError("New bid must be the highest!");
-                }
+                
             }
 
 

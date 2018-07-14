@@ -133,7 +133,7 @@ namespace WebShop.Controllers
             auction.State = "Ready";
             auction.CreatedAt = DateTime.Now;
             auction.UserId = UserId;
-            auction.Picture = pathForDb;
+            auction.Picture = Url.Content("~/" + pathForDb);
             
             db.Auctions.Add(auction);
             db.SaveChanges();
@@ -229,42 +229,59 @@ namespace WebShop.Controllers
                 return RedirectToAction("Index", "Home");
 
 
-            // ako je veci od najveceg ponudjenog
-            int? MaxBidAmount = AuctionsBids.Any() ? AuctionsBids.Max(a => a.Amount) : AuctionOnBid.StartPrice;
-            if(Amount > MaxBidAmount.GetValueOrDefault())
+            if (DateTime.UtcNow > AuctionOnBid.ClosedAt)
             {
-
+                Session["error"] = "Auction has expired!";
+            }
+            else { 
                 // Maximum old bid
                 var MyBids = db.Bids.Where(b => b.AuctionId == AuctionId && b.UserId == LoggedUser.Id);
                 int MaxOldBid = MyBids.Any() ? MyBids.Max(a => a.Amount) : 0;
-
+                // Amount to pay
                 int AmountToPay = Amount - MaxOldBid;
-
-                // Decreas users number of tokens
-                if(LoggedUser.Tokens < AmountToPay)
+                
+                // Pocetak transakcije
+                using(var transactionContext = db.Database.BeginTransaction())
                 {
-                    Session["error"] = "Not enough funds";
-                    Redirect(Request.UrlReferrer.ToString());
+                    int? MaxBidAmount = AuctionsBids.Any() ? AuctionsBids.Max(a => a.Amount) : AuctionOnBid.StartPrice;
+                    if (Amount <= MaxBidAmount.GetValueOrDefault())
+                    {
+                        Session["error"] = "Your Bid must be the highest and higher than start price!";
+                    }
+                    else if (db.Users.Find(LoggedUser.Id).Tokens < AmountToPay)
+                    {
+                        Session["error"] = "Not enough funds";
+                    }
+                    else
+                    {
+                        try
+                        {
+                            LoggedUser.Tokens -= Amount - MaxOldBid;
+                            db.Entry(LoggedUser).State = EntityState.Modified;
+
+                            Bid newBid = new Bid
+                            {
+                                AuctionId = AuctionId,
+                                UserId = LoggedUser.Id,
+                                Amount = Amount,
+                                CreatedAt = DateTime.Now
+                            };
+
+                            db.Bids.Add(newBid);
+                            db.SaveChanges();
+                            transactionContext.Commit();
+
+                            Session["success"] = "Your bid has been placed";
+                        }
+                        catch (Exception e)
+                        {
+                            transactionContext.Rollback();
+                            Session["error"] = e.Message;
+                        }
+                    }
                 }
 
-                LoggedUser.Tokens -= Amount - MaxOldBid;
-                db.Entry(LoggedUser).State = EntityState.Modified;
-
-                Bid newBid = new Bid
-                {
-                    AuctionId = AuctionId,
-                    UserId = LoggedUser.Id,
-                    Amount = Amount,
-                    CreatedAt = DateTime.Now
-                };
-
-                db.Bids.Add(newBid);
-                db.SaveChanges();
-                Session["success"] = "Your bid has been placed";
-            }
-            else
-            {
-                Session["error"] = "Your Bid must be the highest and higher than start price!";
+                
             }
                        
 
