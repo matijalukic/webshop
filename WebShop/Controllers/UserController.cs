@@ -349,7 +349,7 @@ namespace WebShop.Controllers
             //}
 
 
-            var client = new SendGridClient("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");
+            var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
                 From = new EmailAddress("noreply@matijaiepazurewebsites.net", "Matija Lukic"),
